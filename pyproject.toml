@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "airflow-spark"
+version = "0.1.0"
+description = ""
+authors = ["Levy Marques Nunes <levy.vix@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+pyspark = "^3.5.1"
+apache-airflow = "^2.9.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
