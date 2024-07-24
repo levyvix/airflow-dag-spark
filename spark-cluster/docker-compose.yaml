@@ -4,6 +4,8 @@ services:
   spark-master:
     container_name: spark-master1
     image: owshq-spark:3.5
+    networks:
+      - airflow_spark_network
     env_file:
       - .env
     environment:
@@ -19,10 +21,10 @@ services:
     volumes:
       - ${APP_SRC_PATH}:/opt/bitnami/spark/jobs
 
-  # Spark Workers
-  spark-worker-1:
-    container_name: spark-worker-1-levi
+  spark-worker:
     image: owshq-spark:3.5
+    networks:
+      - airflow_spark_network
     env_file:
       - .env
     environment:
@@ -40,45 +42,21 @@ services:
       - ${APP_SRC_PATH}:/opt/bitnami/spark/jobs
     depends_on:
       - spark-master
+
+  spark-worker-1:
+    extends:
+      service: spark-worker
+    container_name: spark-worker-1-levi
 
   spark-worker-2:
+    extends:
+      service: spark-worker
     container_name: spark-worker-2-levi
-    image: owshq-spark:3.5
-    env_file:
-      - .env
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-      - SPARK_WORKER_MEMORY=3G
-      - SPARK_WORKER_CORES=2
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-      - SPARK_USER=spark
-      - SPARK_LOG_CONF=/opt/bitnami/spark/conf/log4j2.properties
-    volumes:
-      - ${APP_SRC_PATH}:/opt/bitnami/spark/jobs
-    depends_on:
-      - spark-master
 
   spark-worker-3:
+    extends:
+      service: spark-worker
     container_name: spark-worker-3-levi
-    image: owshq-spark:3.5
-    env_file:
-      - .env
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-      - SPARK_WORKER_MEMORY=3G
-      - SPARK_WORKER_CORES=2
-      - SPARK_RPC_AUTHENTICATION_ENABLED=no
-      - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
-      - SPARK_SSL_ENABLED=no
-      - SPARK_USER=spark
-      - SPARK_LOG_CONF=/opt/bitnami/spark/conf/log4j2.properties
-    volumes:
-      - ${APP_SRC_PATH}:/opt/bitnami/spark/jobs
-    depends_on:
-      - spark-master
+
+networks:
+  airflow_spark_network:
